@@ -26,8 +26,9 @@ def parse_data(basedir, image_id):
       continue
 
     box = obj.find('bndbox')
-    bindex = list(map(lambda x: box.find(x).text,
+    bindex = list(map(lambda x: int(box.find(x).text),
                       ['xmin', 'xmax', 'ymin', 'ymax']))
+    bindex = list(map(str, bindex))
     out_str = '\t'.join([cls, str(id), jpeg_fp] + bindex)
     data.append(out_str)
   return data
@@ -38,8 +39,10 @@ def get_ids_by_set(basedir):
   ids = {'val': [], 'train': [], 'test': []}
   for id in ids.keys():
     image_ids = list(
-        a.strip() for a in open(f'{dir}/{id}.txt', 'r').readlines() if
-        a.strip() != '')
+        a.strip().split(' ')[0] for a in
+        open(f'{dir}/{id}.txt', 'r').readlines() if
+        a.strip().split(' ')[0] != '')
+
     ids[id] = image_ids
   return ids
 
