@@ -1,7 +1,9 @@
 from tensorflow.keras.layers import Conv2D, LeakyReLU, MaxPool2D
-from tensorflow.keras.layers import Flatten, Dense, Reshape, Dropout
+from tensorflow.keras.layers import Flatten, Dense, Dropout
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.regularizers import l2
+
+from .reshape_yolo import YoloReshape
 
 lrelu = LeakyReLU(alpha=0.1)
 l2reg = l2(5e-4)
@@ -68,8 +70,8 @@ class YOLO:
     self.layers.append(Flatten())
     self.layers.append(Dense(512))
     self.layers.append(Dropout(rate=0.5))
-    self.layers.append(Dense(1470, activation='sigmoid'))
-    self.layers.append(Reshape((7, 7, 30)))
+    self.layers.append(Dense(1470))
+    self.layers.append(YoloReshape(target=(7, 7, 30)))
 
     self.model = Sequential(self.layers)
     print('-' * 50)
